@@ -22,8 +22,34 @@ limits:
 {{/*
 Definir as portas dos containers
 */}}
-{{-define "app.ports" -}}
+{{- define "app.ports" -}}
 {{ range .ports }}
 - containerPort: {{ .port }}
 {{- end }}
+{{- end }}
+
+{{/*
+Definindo os ConfigMap - Database
+*/}}
+{{- define "database.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .component}}-db-config
+data:
+  app-config.yaml : |
+    {{- toYaml .config | nindent 4 }}
+{{- end }}
+
+{{/*
+Definindo os ConfigMap - Observability
+*/}}
+{{- define "observability.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ .component}}-observability-config
+data:
+  app-config.json: |
+    {{ toJson .config }}
 {{- end }}
